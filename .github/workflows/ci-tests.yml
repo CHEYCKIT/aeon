@@ -14,6 +14,7 @@ on:
       - 'bin/**'
       - 'aeon.yml'
       - '.github/workflows/aeon.yml'
+      - '.github/workflows/messages.yml'
       - '.github/workflows/scheduler.yml'
       - 'harness-adapter/**'
       - '.github/workflows/chain-runner.yml'
@@ -26,6 +27,7 @@ on:
       - 'bin/**'
       - 'aeon.yml'
       - '.github/workflows/aeon.yml'
+      - '.github/workflows/messages.yml'
       - '.github/workflows/scheduler.yml'
       - 'harness-adapter/**'
       - '.github/workflows/chain-runner.yml'
@@ -67,6 +69,10 @@ jobs:
         run: bash scripts/tests/test_readonly_failure_commit.sh
       - name: per-skill requires parse tests
         run: bash scripts/tests/test_skill_requires.sh
+      - name: ALL_SECRETS covers every skill requires key
+        run: bash scripts/tests/test_all_secrets_allowlist.sh
+      - name: gateway cascade failover classifier tests
+        run: bash scripts/tests/test_gateway_failover.sh
       - name: run actions summary tests
         run: bash scripts/tests/test_run_actions_summary.sh
       - name: fleet scorecard classification tests
