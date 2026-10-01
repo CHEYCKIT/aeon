@@ -95,6 +95,10 @@ WRITE_TOOLS="$WRITE_TOOLS,Bash(cargo:*)"
 # High/Critical code findings must pass this key-scrubbing, evidence-producing
 # runner before vuln-scanner may claim the severity or route a disclosure.
 WRITE_TOOLS="$WRITE_TOOLS,Bash(./scripts/vuln-poc-gate.sh:*)"
+# feature asks GitHub whether an open PR already covers its work, and whether a
+# "Closes #N" names a real open issue, before it opens or reports a PR. Read-only
+# gh calls with validated arguments; the decision is the script's, not the model's.
+WRITE_TOOLS="$WRITE_TOOLS,Bash(./scripts/feature-open-pr.sh:*)"
 # pr-review asks GitHub whether it already reviewed a PR at its head commit, with
 # the same receipt count the dev-loop gate uses, before posting another review.
 WRITE_TOOLS="$WRITE_TOOLS,Bash(./scripts/dev-loop-review.sh:*)"
