@@ -14,6 +14,7 @@ on:
       - 'bin/**'
       - 'aeon.yml'
       - '.github/workflows/aeon.yml'
+      - '.github/workflows/scheduler.yml'
       - 'harness-adapter/**'
       - '.github/workflows/chain-runner.yml'
       - 'skills/**'
@@ -25,6 +26,7 @@ on:
       - 'bin/**'
       - 'aeon.yml'
       - '.github/workflows/aeon.yml'
+      - '.github/workflows/scheduler.yml'
       - 'harness-adapter/**'
       - '.github/workflows/chain-runner.yml'
       - 'skills/**'
@@ -130,6 +132,10 @@ jobs:
         run: node scripts/validate-config.js
       - name: cron-due scheduler decision tests
         run: bash scripts/tests/test_cron_due.sh
+      - name: scheduler aeon.yml parser tests
+        run: bash scripts/tests/test_parse_aeon_config.sh
+      - name: scheduler tick end-to-end tests
+        run: bash scripts/tests/test_scheduler_tick.sh
       - name: circuit-breaker scheduler decision tests
         run: bash scripts/tests/test_breaker.sh
       - name: reactive-trigger when-condition tests
