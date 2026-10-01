@@ -58,7 +58,7 @@ hasnt "commented reactive not registered" "$OUT" "^reactive\|autoresearch\|"
 ROOT=$(records "$ROOT_CFG")
 has   "root: heartbeat enabled"         "$ROOT" "skill|heartbeat|true|0 8 * * *|"
 has   "root: dev-loop chain is manual"  "$ROOT" "chain|dev-loop|workflow_dispatch|feature,pr-review"
-hasnt "root: no routine chain (commented example)" "$ROOT" "^chain\|routine\|"
+hasnt "root: no morning-digest chain (commented example)" "$ROOT" "^chain\|morning-digest\|"
 hasnt "root: dev-loop is not a skill"   "$ROOT" "^skill\|dev-loop\|"
 hasnt "root: jsonrender is not a skill" "$ROOT" "^skill\|jsonrender\|"
 hasnt "root: no reactive triggers"      "$ROOT" "^reactive\|"
@@ -67,12 +67,12 @@ WANT=$(awk '/^skills:/{f=1;next} f&&/^[a-zA-Z]/{f=0} f&&/^  [a-z0-9-]+:/{n++} EN
 GOT=$(grep -c '^skill|' <<< "$ROOT")
 [ "$WANT" = "$GOT" ] && pass=$((pass+1)) || { fail=$((fail+1)); echo "FAIL: root skills: want $WANT records, got $GOT"; }
 
-# The commented routine example must stay valid YAML once uncommented, or an
+# The commented morning-digest example must stay valid YAML once uncommented, or an
 # operator enabling it would stop the whole scheduler (invalid YAML exits 2).
 EX=$(mktemp)
-{ echo "chains:"; awk '/^  # routine:/{f=1} f&&/^  #/{sub(/^  # /,"  "); print; next} f{exit}' "$ROOT_CFG"; } > "$EX"
-has   "root: uncommented routine example parses" "$(records "$EX")" \
-      "chain|routine|0 7 * * *|token-movers,hn-digest,issue-triage,github-trending,routine"
+{ echo "chains:"; awk '/^  # morning-digest:/{f=1} f&&/^  #/{sub(/^  # /,"  "); print; next} f{exit}' "$ROOT_CFG"; } > "$EX"
+has   "root: uncommented morning-digest example parses" "$(records "$EX")" \
+      "chain|morning-digest|0 7 * * *|token-movers,github-trending,digest"
 rm -f "$EX"
 
 # --- failure modes: loud, never a half-parsed config ---
