@@ -139,6 +139,32 @@ case "$LINE" in
   *"model: account default (logged after the run)"*) pass "native codex line says the account picks the model" ;;
   *) bad "native codex line (got: $LINE)" ;;
 esac
+# An explicit OpenAI pick on a native codex login IS forwarded, as a bare id
+# (the picker controls the run; codex.sh retries on the account default if the
+# account refuses it). Applies to the config model and a dispatch model alike.
+mkfixture codex openai/gpt-6-sol
+[ "$(get MODEL_ARG "" CODEX_AUTH=xx)" = "gpt-6-sol" ] \
+  && pass "native codex: picked openai/* model forwarded as a bare id" || bad "native codex pick (got '$(get MODEL_ARG "" CODEX_AUTH=xx)')"
+[ "$(get HARNESS_MODEL "" CODEX_AUTH=xx)" = "gpt-6-sol" ] \
+  && pass "native codex: HARNESS_MODEL names the picked model" || bad "native codex HARNESS_MODEL"
+[ "$(get MODEL_ARG "" OPENAI_API_KEY=xx INPUT_MODEL=openai/gpt-6.1-sol)" = "gpt-6.1-sol" ] \
+  && pass "native codex: dispatch model beats config" || bad "native codex dispatch pick"
+mkfixture vibe openai/gpt-6-sol
+[ -z "$(get MODEL_ARG "" MISTRAL_API_KEY=xx)" ] \
+  && pass "native vibe: still no --model" || bad "native vibe must not forward"
+# A per-skill claude pin is skipped on a non-claude harness: the config's
+# codex pick applies (live: heartbeat pinned to claude-opus-5-5 on aeon-test).
+{ echo "model: openai/gpt-6-luna"; echo "harness: codex"; echo "skills:"
+  echo '  heartbeat: { enabled: true, model: "claude-opus-5-5" }'
+  echo '  pinned: { enabled: true, model: "openai/gpt-6.1-sol" }'; } > aeon.yml
+[ "$(get MODEL_ARG heartbeat CODEX_AUTH=xx)" = "gpt-6-luna" ] \
+  && pass "claude skill pin skipped: config codex pick applies" || bad "claude pin skip (got '$(get MODEL_ARG heartbeat CODEX_AUTH=xx)')"
+[ "$(get MODEL_ARG heartbeat)" = "openai/gpt-6-luna" ] \
+  && pass "claude skill pin skipped on openrouter too" || bad "claude pin skip openrouter"
+[ "$(get MODEL_ARG pinned CODEX_AUTH=xx)" = "gpt-6.1-sol" ] \
+  && pass "an openai skill pin still beats config" || bad "openai skill pin"
+[ "$(get MODEL_ARG heartbeat CODEX_AUTH=xx INPUT_MODEL=claude-opus-5-5)" = "gpt-6-luna" ] \
+  && pass "claude dispatch model skipped too" || bad "claude dispatch skip"
 
 # --- 5. model precedence ----------------------------------------------------
 # An aeon-native id is NOT an OpenRouter id: a repo that never touched the model
