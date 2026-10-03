@@ -2,6 +2,8 @@
 
 The local web UI for running Aeon — enable skills, browse community packs, set schedules, manage secrets, pick the agent harness and per-skill model, and watch skill output in real time. It's the first screen you see after `./aeon`, and the one that turns "edit `aeon.yml` and `skills.json` by hand" into point-and-click.
 
+> **Don't want to run it locally?** [Aeon Connect](https://www.aeon.fun/connect) is the hosted, multi-tenant version of this same UI: sign in with GitHub and it creates your instance, connects a model, and lets you pick skills from the browser, through a GitHub App instead of your `gh` login.
+
 ## What it is
 
 A [Next.js](https://nextjs.org) app that runs on your machine and drives your Aeon fork through the GitHub CLI. Its `/api/*` routes shell out to `gh` for everything that touches your repo — reading and writing secrets, dispatching workflow runs, and committing config changes — so there's no separate backend and no credential custody: the dashboard holds nothing your `gh` login doesn't already grant.
@@ -45,7 +47,7 @@ The left sidebar switches between the workspaces; the **Team** roster below the 
 | **Strategy** | Edit `STRATEGY.md` — the north-star goal, priorities, audience, and constraints that ride along with every run. |
 | **Soul** | Manage the optional `soul/` voice files (identity, writing style, examples) so notifications and articles sound like you. After a `strategy-builder` or `soul-builder` run succeeds, the Strategy and Soul editors pull and reload on their own. |
 | **MCP** | Browse featured MCP servers and write `.mcp.json` for one-click install; shows which secret each server needs. |
-| **Settings** | Add and manage credentials (Anthropic / gateway keys, per-skill API keys, notification channel tokens) as GitHub secrets. Skills flag inline when a required key is missing. |
+| **Keys** | Add and manage credentials (Anthropic / gateway keys, per-skill API keys, notification channel tokens) as GitHub secrets. Skills flag inline when a required key is missing. |
 
 On a phone (below 768px) the sidebar and the Feed / Runs / Analytics panel become slide-in drawers opened from a top bar, and Pull / Push move into the sidebar drawer.
 
@@ -57,7 +59,7 @@ The **top bar** carries a harness dropdown that sets which agent CLI runs your s
 
 ## Configuration
 
-Credentials are managed in-app (**Settings** → Add Credential) and stored as GitHub repo secrets, not in a local file — so `.env` is optional. The variables the app itself reads:
+Credentials are managed in-app (**Keys** → Add Credential) and stored as GitHub repo secrets, not in a local file - so `.env` is optional. The variables the app itself reads:
 
 | Variable | Required | Purpose |
 |----------|----------|---------|
@@ -83,7 +85,7 @@ The gate also rejects state-changing requests whose `Origin` isn't allowlisted. 
 - **Frontend:** Next.js App Router (`app/`) with React client components in `components/`. State is the repo itself — the UI reads `catalog/skills.json`, `catalog/packs.json`, `aeon.yml`, and `STRATEGY.md`, and writes back through the API.
 - **API:** route handlers under `app/api/*` are the only place the dashboard touches your repo. They shell out to `gh` (`lib/gh.ts`) for secrets, workflow dispatch, and content reads, and run behind the loopback gate (`proxy.ts`).
 - **Skill output feed:** skill runs drop json-render specs into `outputs/`; the feed renders them as cards with a small built-in spec renderer (`components/SpecNode.tsx`). `./notify-jsonrender` (a post-run workflow step) produces those specs.
-- **Deploy:** the repo auto-deploys `apps/dashboard/` to Vercel on push to `main` — no manual step. Most operators run it locally with `./aeon`; the hosted build is the same app.
+- **Deploy:** the repo auto-deploys `apps/dashboard/` to Vercel on push to `main` — no manual step. Run it locally with `./aeon`; for a hosted, sign-in-with-GitHub version of the same UI, use [Aeon Connect](https://www.aeon.fun/connect).
 
 ## Sandbox / deployment note
 
