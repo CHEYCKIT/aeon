@@ -1,6 +1,6 @@
 {
   "heartbeat": {
-    "last_status": "failed",
+    "last_status": "dispatched",
     "last_failed": "2026-10-04T15:03:20Z",
     "total_runs": 2,
     "total_successes": 0,
@@ -8,6 +8,6 @@
     "consecutive_failures": 2,
     "success_rate": 0,
     "last_error": "wned\":0,\"requested\":{\"background\":0,\"foreground\":0,\"unset\":0},\"started_in_background\":0,\"max_depth\":0,\"spawned_by_subagents\":0,\"completed\":0,\"failed\":0,\"killed\":{\"parent\":0,\"user\":0,\"system\":0},\"refus",
-    "last_dispatch": "2026-10-04T15:02:49Z"
+    "last_dispatch": "2026-10-04T18:37:38Z"
   }
 }
